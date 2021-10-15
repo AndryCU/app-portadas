@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/bloc/noticias_bloc.dart';
 import 'package:news_app/model/db.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
@@ -16,33 +17,39 @@ class PopularTabView extends StatefulWidget {
 }
 
 class _PopularTabViewState extends State<PopularTabView> {
-  late Future<List<Noticias>> principales;
   late Future<List<Noticias>> destacadas;
+  //late Future<List<Noticias>> principales;
+  final noticiasProvider=NoticiasProvider();
+  late Future<List<Noticias>> futuro_principal;
   final prefs = new PreferenciasUsuario();
   @override
   void initState() {
-    principales=NoticiasProvider().principalesNews();
-    destacadas=NoticiasProvider().getDestacadas();
-    DBProvider.db.addNoticiaPortada(Noticias('', '_subtitle', '_url', '_url_image', '_content', 1, 1));
+    destacadas=noticiasProvider.getDestacadas();
+    print('initState()');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('build popular tab');
     return Container(
       child: ListView(
         children: [
           Container(
             width: double.infinity,
-            height: 300.0,
+            height: MediaQuery.of(context).size.height*0.45,
             padding: EdgeInsets.only(left: 18.0),
             child: FutureBuilder(
-              future: principales,
+              future: DBProvider.db.getNoticiasPortada(),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
+
+                if(snapshot.hasData&&snapshot.data!.length==0){
+                  return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1));
+                }
+
                 if (snapshot.hasData){
-                  print('se ejecuta');
+                  print('snapshot.hasData length ${snapshot.data!.length}');
                   return ListView.builder(
-                    physics: ScrollPhysics(),
                     itemCount: snapshot.data!.length,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -80,7 +87,6 @@ class _PopularTabViewState extends State<PopularTabView> {
           FutureBuilder(
             future: destacadas,
             builder: (context, AsyncSnapshot<List<Noticias>> snapshot2) {
-             // print(snapshot2.data!.length);
               if(snapshot2.hasData){
                 return ListView.builder(
                   itemCount: snapshot2.data!.length,
@@ -114,5 +120,11 @@ class _PopularTabViewState extends State<PopularTabView> {
         ],
       ),
     );
+  }
+
+  void test()async {
+    print('inicia test');
+
+    print('fin test');
   }
 }

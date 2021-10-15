@@ -37,7 +37,9 @@ dependencies:
   cached_network_image:
   dio:
   path_provider:
-
+  introduction_screen:
+  lottie:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

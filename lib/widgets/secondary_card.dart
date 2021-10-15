@@ -35,21 +35,21 @@ class SecondaryCard extends StatelessWidget {
           SizedBox(width: 8.0),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 5.0),
+              padding: EdgeInsets.symmetric(vertical: 2.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     news.title,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    style: kTitleCard,
+                    maxLines: 2,
+                    style: kTitleCard.copyWith(fontSize: MediaQuery.of(context).size.width*0.038),
                   ),
                   SizedBox(height: 4,),
                   Text(
                     news.subtitle,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 5,
+                    maxLines: 3,
                     style: kDetailContent,
                   ),
                 ],

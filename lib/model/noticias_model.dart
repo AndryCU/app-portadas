@@ -53,27 +53,36 @@ class Noticias {
     _url_image = value;
   }
 
+
+  int get portada => _portada;
+
+  set portada(int value) {
+    _portada = value;
+  }
+
   Map<String,dynamic> toJson()=>{
     'title':title,
     'subtitle':subtitle,
     'url':url,
     'url_image':url_image,
     'content':content,
-    'favorite':favorite
+    'favorite':favorite,
+    'portada': portada
   };
 
 
- static List<Noticias> fromJson(List<Map<String,dynamic>> map){
+  static List<Noticias> fromJson(List<Map<String,dynamic>> map){
+   print('fromJson');
     List<Noticias> favoritas=[];
     for(var mapa_noticia in map){
       String title=mapa_noticia['title'];
-      String subtitle=mapa_noticia['title'];
-      String url=mapa_noticia['title'];
-      String url_image=mapa_noticia['title'];
-      String content=mapa_noticia['title'];
-      int favorite=mapa_noticia['title'];
+      String subtitle=mapa_noticia['subtitle'];
+      String url=mapa_noticia['url'];
+      String url_image=mapa_noticia['url_image'];
+      String content=mapa_noticia['content'];
+      int favorite=(mapa_noticia['favorite']);
       int portada=mapa_noticia['portada'];
-      favoritas.add(Noticias(title, subtitle, url, url_image, content, favorite,portada));
+      favoritas.add(Noticias(title, subtitle, url, url_image, content,favorite,portada));
     }
     return favoritas;
   }

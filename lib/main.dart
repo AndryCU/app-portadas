@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:news_app/bloc/noticias_bloc.dart';
 import 'package:news_app/bottomNav.dart';
 import 'package:news_app/utils/preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,9 +14,11 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final preferencias=PreferenciasUsuario();
+
   @override
   Widget build(BuildContext context) {
+    crearDirectorio();
     return MaterialApp(
       title: 'Flutter News',
       debugShowCheckedModeBanner: false,
@@ -22,4 +28,16 @@ class MyApp extends StatelessWidget {
       home: BottomNav(),
     );
   }
+
+  crearDirectorio()async {
+    final directory = await getApplicationDocumentsDirectory();
+    final dirPath = '${directory.path}/imagenes_descargadas';
+
+    if (!await Directory(dirPath).exists()) {
+      await new Directory(dirPath).create();
+    }
+  }
 }
+
+
+

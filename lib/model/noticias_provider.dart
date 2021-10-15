@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'db.dart';
 import 'noticias_model.dart';
 
 class NoticiasProvider{
-
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
-  Future<List<Noticias>> principalesNews()async{
+   principalesNews()async{
+    print('EJECUTA principalesNews');
     String url_picture='';
     String tittle='';
     String url='';
@@ -38,15 +42,20 @@ class NoticiasProvider{
             .children[2]
             .attributes['data-src']!.trim();
       }
+      //DESCARGAR
+      if(url_image.contains('http')){
+        url_image=await downloadAndPath(url_image);
+      }
       flag=false;
       String url2=viral.getElementsByClassName('Link-root Link-isFullCard')[0].attributes['href'].toString();
-      noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image,'',-1,-1));
+      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1));
+      //noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image.toString(),'',-1,-1));
       //VIRAL
       for (int a=0;a<4;a++){
         //NOTICIAS//////////
         try{
-          int as=todas_las_noticias.getElementsByClassName('Card-root Card-isHoverScale')[a]
-              .children[1].attributes['class']!.length;
+          String as=todas_las_noticias.getElementsByClassName('Card-root Card-isHoverScale')[a]
+              .children[1].attributes['class']!.toString();
         }catch (e){
           flag=true;
         }
@@ -54,24 +63,32 @@ class NoticiasProvider{
         if(flag){
           url_picture='assets/foto-no-disponible.jpg';
         }else{
-          url_picture=todas_las_noticias.getElementsByClassName('Card-picture')[a]
+          url_picture=todas_las_noticias.getElementsByClassName('Card-root Card-isHoverScale')[a]
+              .children[0]
+              .children[0]
               .children[0]
               .children[2]
               .attributes['data-src']!.trim();
         }
-        flag=false;
         tittle=todas_las_noticias.getElementsByClassName('Link-root Link-isFullCard')[a].text.trim();
         url=todas_las_noticias.getElementsByClassName('Link-root Link-isFullCard')[a].attributes['href']!.trim();
-        noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture,'',-1,1));
+
+        if(url_picture.contains('http')){
+          url_picture=await downloadAndPath(url_picture);
+        }
+        flag=false;
+        print(tittle);
+        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
+       // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
 
       }
     }
-    //newsSink(noticias_principal_portada);
-    return  noticias_principal_portada;
+    //return  noticias_principal_portada;
   }
 
-
   Future<List<Noticias>> getDestacadas()async{
+
+
     List<Noticias> noticias_destacada = [];
    
     //CUBADEBATE//
@@ -85,24 +102,20 @@ class NoticiasProvider{
     final response =await http.Client().get(Uri.parse("https://actualidad.rt.com/viral"));
     var web=parser.parse(response.body);
     for(var i=0;i<4;i++){
-      String url_cubadebate=web_cubadebate.getElementsByClassName('title')[i+1]
-                                          .children[0]
-                                          .attributes['href']!.trim();
-      String tittle_cubadebate=web_cubadebate.getElementsByClassName('title')[i+1]
-          .children[0]
-          .text.trim();
-      String subtittle_cubadebate=web_cubadebate.getElementsByClassName('excerpt')[i+1]
-          .children[0]
-          .text.trim();
-      int l=web_cubadebate.getElementsByClassName('spoiler')[i]
-          .children.length;
-      String url_picture_cubadebate=web_cubadebate.getElementsByClassName('spoiler')[i]
-          .children[l-2]
-          .children[0]
-          .attributes['src']!
-          .trim();
-      noticias_destacada.add(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate,'',-1,1));
+      final noticia=web_cubadebate.getElementById('front-list')!.children[i];
 
+      String url_cubadebate=noticia.getElementsByClassName('title')[0].children[0].attributes['href']!.trim();
+      String tittle_cubadebate=noticia.getElementsByClassName('title')[0].children[0].text.trim();
+      String subtittle_cubadebate='';
+
+      try {
+        subtittle_cubadebate=noticia.getElementsByClassName('excerpt')[0].children[0].text.trim();
+      }catch(e){
+
+      }
+
+      String url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.trim();
+      noticias_destacada.add(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate.toString(), url_picture_cubadebate.toString(),'',-1,1));
     }
     String url=web.getElementsByClassName('Section-container Section-isRow-isTop-isWrap')[1]
         .children[0]
@@ -125,11 +138,31 @@ class NoticiasProvider{
         .children[0]
         .text
         .trim();
-    noticias_destacada.add(Noticias(tittle, subtittle, url, url_image,'',-1,1));
+    noticias_destacada.add(Noticias(tittle, subtittle, url.toString(), url_image.toString(),'',-1,1));
     return noticias_destacada;
   }
 
+  Future<String> downloadAndPath(String url) async{
+    final directory=await getApplicationDocumentsDirectory();
+    final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}.jpg';
+    final foto=File(path);
+        final response=await Dio().get(url,
+        options: Options(
+            responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: 0
+        )
+        );
+
+        final raf=foto.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+        return foto.path;
+    }
 }
+
+
+
 
 
 

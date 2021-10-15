@@ -1,13 +1,18 @@
+
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-ImageProvider getPicture(String url){
-
-  if (url.contains('http')){
+ImageProvider getPicture(String url) {
+  if (url.contains('http')) {
     return NetworkImage(url);
   }
-  else if(url.contains('assets')){
+  else if(url.contains('asset'))  {
     return AssetImage(url);
   }else{
-      return AssetImage(url);
+    File file=File(url);
+    return FileImage(file);
   }
+
 }

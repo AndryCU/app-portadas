@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/constants.dart';
-import 'package:news_app/model/noticias_provider.dart';
 import 'package:news_app/views/popular_tab_view.dart';
 import 'package:news_app/views/trending_tab_view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+
   @override
   Widget build(BuildContext context) {
-    print('HomeView');
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -57,4 +61,5 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
+
 }

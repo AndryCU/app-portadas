@@ -1,6 +1,8 @@
 
 import 'dart:io';
+import 'package:news_app/bloc/noticias_bloc.dart';
 import 'package:news_app/model/noticias_model.dart';
+import 'package:news_app/model/noticias_provider.dart';
 export 'package:news_app/model/noticias_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -42,28 +44,30 @@ class DBProvider{
 
   //INSERT
   addNoticiaPortada(Noticias noticia) async{
+    print('add noticia ${noticia.title}');
     final db=await database;
-    final result=await db!.insert('Noticias', noticia.toJson());
-
-    return result;
+    await db!.insert('Noticias', noticia.toJson());
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
     final db=await database;
-    final res=await db!.update('Noticias', noticia.toJson(),where: 'url = ?',whereArgs: [noticia.url]);
+    await db!.update('Noticias', noticia.toJson(),where: 'url = ?',whereArgs: [noticia.url]);
   }
 
   //SELECT FAVORITAS
  Future<List<Noticias>> getNoticiasFavoritas()async{
     final db=await database;
-    final res=await db!.query('Noticias',where: 'favorite = 1');
+    final res=await db!.query('Noticias');
     return res.isNotEmpty?Noticias.fromJson(res):[];
-  }
+ }
 
   Future<List<Noticias>> getNoticiasPortada()async{
-    final db=await database;
-    final res=await db!.query('Noticias',where: 'portada = 1');
-    return res.isNotEmpty?Noticias.fromJson(res):[];
+        //await NoticiasProvider().principalesNews();
+        print('connected');
+        final db=await database;
+        final res=await db!.query('Noticias');
+        print(res.length); //longitud 0
+        return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
   //BORRAR
