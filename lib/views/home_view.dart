@@ -17,39 +17,40 @@ class _HomeViewState extends State<HomeView> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(120.0),
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(
-                  "BIENVENIDO",
-                  textAlign: TextAlign.left,
-                  style: kNonActiveTabStyle,
-                ),
-                subtitle: Text(
-                  "Mantente al dia",
-                  textAlign: TextAlign.left,
-                  style: kActiveTabStyle,
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: TabBar(
-                  labelColor: Colors.black,
-                  unselectedLabelColor: kGrey1,
-                  unselectedLabelStyle: kNonActiveTabStyle,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  isScrollable: true,
-                  indicatorColor: Colors.white,
-                  labelStyle: kActiveTabStyle.copyWith(fontSize: 25.0),
-                  tabs: [
-                    Tab(text: "Últimas noticias",),
-                    Tab(text: "Webs"),
-                    //Tab(text: "Recent"),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child:
+              Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      "BIENVENIDO",
+                      textAlign: TextAlign.left,
+                      style: kNonActiveTabStyle,
+                    ),
+                    subtitle: Text(
+                      "Mantente al dia",
+                      textAlign: TextAlign.left,
+                      style: kActiveTabStyle,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: TabBar(
+                      labelColor: Colors.black,
+                      unselectedLabelColor: kGrey1,
+                      unselectedLabelStyle: kNonActiveTabStyle,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      isScrollable: true,
+                      indicatorColor: Colors.white,
+                      labelStyle: kActiveTabStyle.copyWith(fontSize: 25.0),
+                      tabs: [
+                        Tab(text: "Últimas noticias",),
+                        Tab(text: "Portadas"),
+                        //Tab(text: "Recent"),
+                      ],
+                    ),
+                  ),
+                ],
+              )
         ),
         body: TabBarView(
           children: [

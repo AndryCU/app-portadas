@@ -34,12 +34,14 @@ dependencies:
   html:
   shared_preferences:
   sqflite:
-  cached_network_image:
+  #cached_network_image:
   dio:
   path_provider:
   introduction_screen:
   lottie:
   permission_handler:
+  provider:
+  connectivity_plus:
 
 dev_dependencies:
   flutter_test:

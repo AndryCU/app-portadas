@@ -9,7 +9,9 @@ class NoticiasBloc{
   //final _noticiasController=StreamController<List<Noticias>>.broadcast();
   //Stream<List<Noticias>> get noticiasStream =>_noticiasController.stream;
 
-  NoticiasBloc._internal(){  obtenerNoticias();  }
+  NoticiasBloc._internal(){  //obtenerNoticias();
+
+ }
 
   factory NoticiasBloc (){
     return _singlenton;
@@ -25,7 +27,6 @@ class NoticiasBloc{
   //}
 
   Future<List<Noticias>>obtenerNoticias()async{
-    //await agregarNoticiasPortadaPrincipales();
     return DBProvider.db.getNoticiasPortada();
   }
 

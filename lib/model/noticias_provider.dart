@@ -10,7 +10,7 @@ import 'noticias_model.dart';
 
 class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
-   principalesNews()async{
+  principalesNews()async{
     print('EJECUTA principalesNews');
     String url_picture='';
     String tittle='';
@@ -79,7 +79,7 @@ class NoticiasProvider{
         flag=false;
         print(tittle);
         await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
-       // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
+        // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
 
       }
     }
@@ -144,6 +144,9 @@ class NoticiasProvider{
 
   Future<String> downloadAndPath(String url) async{
     final directory=await getApplicationDocumentsDirectory();
+    final String ext=url.contains('.jpeg')?'.jpeg':'.jpg';
+    final String nombre='';
+
     final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}.jpg';
     final foto=File(path);
         final response=await Dio().get(url,

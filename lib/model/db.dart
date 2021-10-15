@@ -63,10 +63,10 @@ class DBProvider{
 
   Future<List<Noticias>> getNoticiasPortada()async{
         //await NoticiasProvider().principalesNews();
-        print('connected');
+
         final db=await database;
         final res=await db!.query('Noticias');
-        print(res.length); //longitud 0
+        print('sadasd${res.length}'); //longitud 0
         return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
