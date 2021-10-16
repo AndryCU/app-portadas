@@ -15,10 +15,11 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final preferencias=PreferenciasUsuario();
+
 
   @override
   Widget build(BuildContext context) {
+
     crearDirectorio();
     return ChangeNotifierProvider(
       create: (context)=>ConnectionStatusView(),

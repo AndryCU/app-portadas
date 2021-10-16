@@ -29,7 +29,6 @@ class _PopularTabViewState extends State<PopularTabView> {
   @override
   void initState() {
     destacadas=noticiasProvider.getDestacadas();
-
     super.initState();
   }
   @override
@@ -44,17 +43,14 @@ class _PopularTabViewState extends State<PopularTabView> {
             height: MediaQuery.of(context).size.height*0.45,
             padding: EdgeInsets.only(left: 18.0),
             child: FutureBuilder(
-              future: DBProvider.db.getNoticiasPortada(),
+              future: DBProvider.db.getNoticiasPortada(context),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
-
                 if(snapshot.hasData&&snapshot.data!.length==0){
                   return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1));
                 }
-
                 if (snapshot.hasData){
-                  print('snapshot.hasData length ${snapshot.data!.length}');
                   return ListView.builder(
-                    physics: ScrollPhysics(),
+                    physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data!.length,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -96,7 +92,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                 return ListView.builder(
                   itemCount: snapshot2.data!.length,
                   scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index2) {
                     return InkWell(
@@ -125,5 +121,11 @@ class _PopularTabViewState extends State<PopularTabView> {
         ],
       ),
     );
+  }
+
+  Future<List<Noticias>> _refresh()async {
+    destacadas=NoticiasProvider().getDestacadas();
+    print('ejecuta refresh');
+    return destacadas;
   }
 }

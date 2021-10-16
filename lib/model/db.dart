@@ -1,12 +1,17 @@
 
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
+import 'package:news_app/utils/preferences.dart';
 export 'package:news_app/model/noticias_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/material.dart';
+
+import 'ConnectionStatus.dart';
+
 class DBProvider {
   static Database? _database;
   static final DBProvider db=DBProvider._();
@@ -42,14 +47,26 @@ class DBProvider {
   }
 
   //INSERT
-  addNoticiaPortada(Noticias noticia,int pos) async{
+  addNoticiaPortada(Noticias noticia) async{
     final db=await database;
     await db!.insert('Noticias', noticia.toJson());
+    print('annadio ya');
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
     final db=await database;
     await db!.update('Noticias', noticia.toJson(),where: 'id = ?',whereArgs: [noticia.url]);
+  }
+
+  borrarTodosPortada()async{
+    final db=await database;
+    final preferencias=PreferenciasUsuario();
+    if(preferencias.start){
+      await db!.delete('Noticias');
+    }
+
+
+    print('BORRO TODOS');
   }
 
   //SELECT FAVORITAS
@@ -59,15 +76,17 @@ class DBProvider {
     return res.isNotEmpty?Noticias.fromJson(res):[];
  }
 
- Future<List<Noticias>> getNoticiasPortada()async{
-    await NoticiasProvider().principalesNews();
+ Future<List<Noticias>> getNoticiasPortada(BuildContext context)async{
+   if(Provider.of<ConnectionStatusView>(context).connected){
+     print('inicia captura desde internet');
+     await NoticiasProvider().principalesNews();
+     print('termina captura desde internet');
+   }
     final db=await database;
     final res=await db!.query('Noticias');
-    print('sadasd ${res.length}');
+    print('listo para devolver ${res.length} elementos');
     return res.isNotEmpty?Noticias.fromJson(res):[];
   }
-
-
 
   //BORRAR
   borrarTodoFavorito()async{
@@ -75,11 +94,12 @@ class DBProvider {
     final res=await db!.delete('Noticias',where: 'favorite = 1');
     return res;
   }
-  borrarParaAnnadir(int id)async{
-    final db =await database;
-    final res=await db!.query('Noticias');
-    if(res.isNotEmpty){
-      await db.delete('Noticias',where: 'id = ?',whereArgs: [id]);
+  borrarParaAnnadir(int pos,Database? dbProvider)async{
+    final res=await dbProvider!.query('Noticias');
+    if(res.length==5){
+      String url=res[pos]['url']as String;
+     int r= await dbProvider.delete('Noticias',where: 'url = ?',whereArgs: [url]);
+     print(r);
     }
   }
 

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+import 'package:news_app/utils/preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'db.dart';
 import 'noticias_model.dart';
@@ -12,6 +13,7 @@ class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
   principalesNews()async{
     print('EJECUTA principalesNews');
+    await DBProvider.db.borrarTodosPortada();
     String url_picture='';
     String tittle='';
     String url='';
@@ -48,7 +50,7 @@ class NoticiasProvider{
       }
       flag=false;
       String url2=viral.getElementsByClassName('Link-root Link-isFullCard')[0].attributes['href'].toString();
-      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1),0);
+      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1));
       //noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image.toString(),'',-1,-1));
       //VIRAL
       for (int a=0;a<4;a++){
@@ -79,11 +81,13 @@ class NoticiasProvider{
         flag=false;
         print(tittle);
        // DBProvider.db.borrarParaAnnadir(a+1);
-        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1),a+1);
+        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
         // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
 
       }
     }
+    final preferencias=PreferenciasUsuario();
+    preferencias.start=true;
     //return  noticias_principal_portada;
   }
 
@@ -144,19 +148,24 @@ class NoticiasProvider{
     final directory=await getApplicationDocumentsDirectory();
     final String ext=url.contains('.jpeg')?'.jpeg':'.jpg';
     final String nombre='';
+    try{
+      final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}.jpg';
+      final foto=File(path);
+      final response=await Dio().get(url,
+          options: Options(
+              responseType: ResponseType.bytes,
+              followRedirects: false,
+              receiveTimeout: 0
+          ));
+      final raf=foto.openSync(mode: FileMode.write);
+      raf.writeFromSync(response.data);
+      await raf.close();
+      return foto.path;
+    }catch (e){
+      print(e.toString());
+      return '';
+    }
 
-    final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}.jpg';
-    final foto=File(path);
-        final response=await Dio().get(url,
-        options: Options(
-            responseType: ResponseType.bytes,
-          followRedirects: false,
-          receiveTimeout: 0
-        ));
-        final raf=foto.openSync(mode: FileMode.write);
-        raf.writeFromSync(response.data);
-        await raf.close();
-        return foto.path;
     }
 }
 
