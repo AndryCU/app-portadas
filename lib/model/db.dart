@@ -1,14 +1,13 @@
 
 import 'dart:io';
-import 'package:news_app/bloc/noticias_bloc.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
 export 'package:news_app/model/noticias_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
-class DBProvider{
+class DBProvider {
   static Database? _database;
   static final DBProvider db=DBProvider._();
 
@@ -43,15 +42,14 @@ class DBProvider{
   }
 
   //INSERT
-  addNoticiaPortada(Noticias noticia) async{
-    print('add noticia ${noticia.title}');
+  addNoticiaPortada(Noticias noticia,int pos) async{
     final db=await database;
     await db!.insert('Noticias', noticia.toJson());
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
     final db=await database;
-    await db!.update('Noticias', noticia.toJson(),where: 'url = ?',whereArgs: [noticia.url]);
+    await db!.update('Noticias', noticia.toJson(),where: 'id = ?',whereArgs: [noticia.url]);
   }
 
   //SELECT FAVORITAS
@@ -61,20 +59,28 @@ class DBProvider{
     return res.isNotEmpty?Noticias.fromJson(res):[];
  }
 
-  Future<List<Noticias>> getNoticiasPortada()async{
-        //await NoticiasProvider().principalesNews();
-
-        final db=await database;
-        final res=await db!.query('Noticias');
-        print('sadasd${res.length}'); //longitud 0
-        return res.isNotEmpty?Noticias.fromJson(res):[];
+ Future<List<Noticias>> getNoticiasPortada()async{
+    await NoticiasProvider().principalesNews();
+    final db=await database;
+    final res=await db!.query('Noticias');
+    print('sadasd ${res.length}');
+    return res.isNotEmpty?Noticias.fromJson(res):[];
   }
+
+
 
   //BORRAR
   borrarTodoFavorito()async{
     final db =await database;
     final res=await db!.delete('Noticias',where: 'favorite = 1');
     return res;
+  }
+  borrarParaAnnadir(int id)async{
+    final db =await database;
+    final res=await db!.query('Noticias');
+    if(res.isNotEmpty){
+      await db.delete('Noticias',where: 'id = ?',whereArgs: [id]);
+    }
   }
 
 }

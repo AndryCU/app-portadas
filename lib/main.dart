@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:news_app/bloc/noticias_bloc.dart';
 import 'package:news_app/bottomNav.dart';
+import 'package:news_app/model/ConnectionStatus.dart';
 import 'package:news_app/utils/preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,13 +20,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     crearDirectorio();
-    return MaterialApp(
-      title: 'Flutter News',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (context)=>ConnectionStatusView(),
+      child: MaterialApp(
+        title: 'Flutter News',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: BottomNav(),
       ),
-      home: BottomNav(),
     );
   }
 

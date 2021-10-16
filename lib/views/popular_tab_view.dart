@@ -1,5 +1,8 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:news_app/bloc/noticias_bloc.dart';
+import 'package:news_app/model/ConnectionStatus.dart';
 import 'package:news_app/model/db.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
@@ -7,6 +10,7 @@ import 'package:news_app/utils/preferences.dart';
 import 'package:news_app/views/read_news_view.dart';
 import 'package:news_app/widgets/primary_card.dart';
 import 'package:news_app/widgets/secondary_card.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
@@ -17,23 +21,23 @@ class PopularTabView extends StatefulWidget {
 }
 
 class _PopularTabViewState extends State<PopularTabView> {
+
   late Future<List<Noticias>> destacadas;
-  //late Future<List<Noticias>> principales;
   final noticiasProvider=NoticiasProvider();
   late Future<List<Noticias>> futuro_principal;
   final prefs = new PreferenciasUsuario();
   @override
   void initState() {
     destacadas=noticiasProvider.getDestacadas();
-    print('initState()');
+
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     print('build popular tab');
     return Container(
       child: ListView(
+        physics: ScrollPhysics(),
         children: [
           Container(
             width: double.infinity,
@@ -50,6 +54,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                 if (snapshot.hasData){
                   print('snapshot.hasData length ${snapshot.data!.length}');
                   return ListView.builder(
+                    physics: ScrollPhysics(),
                     itemCount: snapshot.data!.length,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -120,11 +125,5 @@ class _PopularTabViewState extends State<PopularTabView> {
         ],
       ),
     );
-  }
-
-  void test()async {
-    print('inicia test');
-
-    print('fin test');
   }
 }

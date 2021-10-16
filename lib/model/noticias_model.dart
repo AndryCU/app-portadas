@@ -16,7 +16,6 @@ class Noticias {
       this._favorite,
       this._portada);
 
-
   int get favorite => _favorite;
 
   set favorite(int value) {

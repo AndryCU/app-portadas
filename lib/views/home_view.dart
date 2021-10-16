@@ -1,7 +1,12 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/constants.dart';
+import 'package:news_app/model/ConnectionStatus.dart';
 import 'package:news_app/views/popular_tab_view.dart';
 import 'package:news_app/views/trending_tab_view.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -9,6 +14,26 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  late StreamSubscription<ConnectivityResult> subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      if(result!=ConnectivityResult.none){
+        Provider.of<ConnectionStatusView>(context,listen: false).connected=true;
+      }else{
+        Provider.of<ConnectionStatusView>(context,listen: false).connected=false;
+      }
+    });
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    subscription.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +45,27 @@ class _HomeViewState extends State<HomeView> {
           child:
               Column(
                 children: [
-                  ListTile(
-                    title: Text(
-                      "BIENVENIDO",
-                      textAlign: TextAlign.left,
-                      style: kNonActiveTabStyle,
-                    ),
-                    subtitle: Text(
-                      "Mantente al dia",
-                      textAlign: TextAlign.left,
-                      style: kActiveTabStyle,
-                    ),
+                  Consumer<ConnectionStatusView>(
+                    builder: (context, value, child) {
+                      return ListTile(
+                        title: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: !value.connected?Colors.red:Color.fromRGBO(192, 192, 192, 0),
+                          ),
+                          child: Text(
+                            !value.connected?'OFFLINE':'',
+                            textAlign: TextAlign.center,
+                            style: kNonActiveTabStyle.copyWith(color: Colors.black),
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Mantente al dia",
+                          textAlign: TextAlign.left,
+                          style: kActiveTabStyle,
+                        ),
+                      );
+                    },
                   ),
                   Align(
                     alignment: Alignment.topLeft,

@@ -48,7 +48,7 @@ class NoticiasProvider{
       }
       flag=false;
       String url2=viral.getElementsByClassName('Link-root Link-isFullCard')[0].attributes['href'].toString();
-      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1));
+      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1),0);
       //noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image.toString(),'',-1,-1));
       //VIRAL
       for (int a=0;a<4;a++){
@@ -78,7 +78,8 @@ class NoticiasProvider{
         }
         flag=false;
         print(tittle);
-        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
+       // DBProvider.db.borrarParaAnnadir(a+1);
+        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1),a+1);
         // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
 
       }
@@ -87,23 +88,15 @@ class NoticiasProvider{
   }
 
   Future<List<Noticias>> getDestacadas()async{
-
-
     List<Noticias> noticias_destacada = [];
    
     //CUBADEBATE//
     final response_cubadebate =await http.Client().get(Uri.parse("http://www.cubadebate.cu/"));
     var web_cubadebate=parser.parse(response_cubadebate.body);
-    
-    //CUBADEBATE//
-
-
-    //RT//
     final response =await http.Client().get(Uri.parse("https://actualidad.rt.com/viral"));
     var web=parser.parse(response.body);
     for(var i=0;i<4;i++){
       final noticia=web_cubadebate.getElementById('front-list')!.children[i];
-
       String url_cubadebate=noticia.getElementsByClassName('title')[0].children[0].attributes['href']!.trim();
       String tittle_cubadebate=noticia.getElementsByClassName('title')[0].children[0].text.trim();
       String subtittle_cubadebate='';
@@ -129,11 +122,16 @@ class NoticiasProvider{
     final response2 =await http.Client().get(Uri.parse('https://actualidad.rt.com$url'));
     var web2=parser.parse(response2.body);
     String tittle=web2.getElementsByClassName('HeadLine-root HeadLine-type_2 ')[0].text.trim();
-    String url_image=web2.getElementsByClassName('Cover-image')[0]
-        .children[0]
-        .children[2]
-        .attributes['data-src']
-        .toString();
+    String url_image='';
+    try{
+       url_image=web2.getElementsByClassName('Cover-image')[0]
+          .children[0]
+          .children[2]
+          .attributes['data-src']
+          .toString();
+    }catch(e){
+          url_image='assets/foto-no-disponible.jpg';
+    }
     String subtittle=web2.getElementsByClassName('ArticleView-summary')[0]
         .children[0]
         .text
@@ -154,9 +152,7 @@ class NoticiasProvider{
             responseType: ResponseType.bytes,
           followRedirects: false,
           receiveTimeout: 0
-        )
-        );
-
+        ));
         final raf=foto.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         await raf.close();
