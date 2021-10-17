@@ -6,6 +6,7 @@ class Noticias {
   String _content;
   int _favorite;
   int _portada;
+  int _destacada;
 
   Noticias(
       this._title,
@@ -14,7 +15,15 @@ class Noticias {
       this._url_image,
       this._content,
       this._favorite,
-      this._portada);
+      this._portada,
+      this._destacada);
+
+
+  int get destacada => _destacada;
+
+  set destacada(int value) {
+    _destacada = value;
+  }
 
   int get favorite => _favorite;
 
@@ -66,7 +75,8 @@ class Noticias {
     'url_image':url_image,
     'content':content,
     'favorite':favorite,
-    'portada': portada
+    'portada': portada,
+    'destacada':destacada
   };
 
 
@@ -81,7 +91,8 @@ class Noticias {
       String content=mapa_noticia['content'];
       int favorite=(mapa_noticia['favorite']);
       int portada=mapa_noticia['portada'];
-      favoritas.add(Noticias(title, subtitle, url, url_image, content,favorite,portada));
+      int destacada=mapa_noticia['destacada'];
+      favoritas.add(Noticias(title, subtitle, url, url_image, content,favorite,portada,destacada));
     }
     return favoritas;
   }

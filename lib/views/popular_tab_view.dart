@@ -22,18 +22,10 @@ class PopularTabView extends StatefulWidget {
 
 class _PopularTabViewState extends State<PopularTabView> {
 
-  late Future<List<Noticias>> destacadas;
-  final noticiasProvider=NoticiasProvider();
-  late Future<List<Noticias>> futuro_principal;
   final prefs = new PreferenciasUsuario();
-  @override
-  void initState() {
-    destacadas=noticiasProvider.getDestacadas();
-    super.initState();
-  }
+
   @override
   Widget build(BuildContext context) {
-    print('build popular tab');
     return Container(
       child: ListView(
         physics: ScrollPhysics(),
@@ -46,7 +38,7 @@ class _PopularTabViewState extends State<PopularTabView> {
               future: DBProvider.db.getNoticiasPortada(context),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
                 if(snapshot.hasData&&snapshot.data!.length==0){
-                  return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1));
+                  return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,0));
                 }
                 if (snapshot.hasData){
                   return ListView.builder(
@@ -72,7 +64,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                     },
                   );
                 }
-                return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1));
+                return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,0));
               },
             ),
           ),
@@ -86,7 +78,7 @@ class _PopularTabViewState extends State<PopularTabView> {
             ),
           ),
           FutureBuilder(
-            future: destacadas,
+            future: DBProvider.db.getNoticiasDestacadas(context),
             builder: (context, AsyncSnapshot<List<Noticias>> snapshot2) {
               if(snapshot2.hasData){
                 return ListView.builder(
@@ -114,7 +106,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                   },
                 );
               }else{
-                return SecondaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1),);
+                return SecondaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,1),);
               }
             },
           )
@@ -123,9 +115,4 @@ class _PopularTabViewState extends State<PopularTabView> {
     );
   }
 
-  Future<List<Noticias>> _refresh()async {
-    destacadas=NoticiasProvider().getDestacadas();
-    print('ejecuta refresh');
-    return destacadas;
-  }
 }

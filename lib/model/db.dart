@@ -39,7 +39,8 @@ class DBProvider {
                 'url_image TEXT,'
                 'content TEXT,'
                 'favorite INTEGER,'
-                'portada INTEGER'
+                'portada INTEGER,'
+                'destacada INTEGER'
                 ')'
           );
     }
@@ -50,7 +51,6 @@ class DBProvider {
   addNoticiaPortada(Noticias noticia) async{
     final db=await database;
     await db!.insert('Noticias', noticia.toJson());
-    print('annadio ya');
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
@@ -58,15 +58,20 @@ class DBProvider {
     await db!.update('Noticias', noticia.toJson(),where: 'id = ?',whereArgs: [noticia.url]);
   }
 
-  borrarTodosPortada()async{
+  borrarPortadaPrincipales()async{
     final db=await database;
     final preferencias=PreferenciasUsuario();
     if(preferencias.start){
-      await db!.delete('Noticias');
+      await db!.delete('Noticias',where: 'destacada=0');
     }
+  }
 
-
-    print('BORRO TODOS');
+  borrarPortadaDestacadas()async{
+    final db=await database;
+    final preferencias=PreferenciasUsuario();
+    if(preferencias.start){
+      await db!.delete('Noticias',where: 'destacada=1');
+    }
   }
 
   //SELECT FAVORITAS
@@ -78,13 +83,19 @@ class DBProvider {
 
  Future<List<Noticias>> getNoticiasPortada(BuildContext context)async{
    if(Provider.of<ConnectionStatusView>(context).connected){
-     print('inicia captura desde internet');
      await NoticiasProvider().principalesNews();
-     print('termina captura desde internet');
    }
     final db=await database;
-    final res=await db!.query('Noticias');
-    print('listo para devolver ${res.length} elementos');
+    final res=await db!.query('Noticias',where: 'destacada=0');
+    return res.isNotEmpty?Noticias.fromJson(res):[];
+  }
+
+  Future<List<Noticias>> getNoticiasDestacadas(BuildContext context)async{
+    if(Provider.of<ConnectionStatusView>(context).connected){
+      await NoticiasProvider().getDestacadas();
+    }
+    final db=await database;
+    final res=await db!.query('Noticias',where: 'destacada=1');
     return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 

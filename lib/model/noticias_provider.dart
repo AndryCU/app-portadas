@@ -11,9 +11,9 @@ import 'noticias_model.dart';
 
 class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
-  principalesNews()async{
+   principalesNews()async{
     print('EJECUTA principalesNews');
-    await DBProvider.db.borrarTodosPortada();
+    await DBProvider.db.borrarPortadaPrincipales();
     String url_picture='';
     String tittle='';
     String url='';
@@ -50,7 +50,7 @@ class NoticiasProvider{
       }
       flag=false;
       String url2=viral.getElementsByClassName('Link-root Link-isFullCard')[0].attributes['href'].toString();
-      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1));
+      await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1,0));
       //noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image.toString(),'',-1,-1));
       //VIRAL
       for (int a=0;a<4;a++){
@@ -81,7 +81,7 @@ class NoticiasProvider{
         flag=false;
         print(tittle);
        // DBProvider.db.borrarParaAnnadir(a+1);
-        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
+        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
         // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1));
 
       }
@@ -91,7 +91,9 @@ class NoticiasProvider{
     //return  noticias_principal_portada;
   }
 
-  Future<List<Noticias>> getDestacadas()async{
+  //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA VERTICAL
+   getDestacadas()async{
+    await DBProvider.db.borrarPortadaDestacadas();
     List<Noticias> noticias_destacada = [];
    
     //CUBADEBATE//
@@ -110,9 +112,15 @@ class NoticiasProvider{
       }catch(e){
 
       }
+      String url_picture_cubadebate='';
+      try{
+        url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.trim();
+        url_picture_cubadebate=await downloadAndPath(url_picture_cubadebate);
+      }catch(e){
+        url_picture_cubadebate='assets/foto-no-disponible.jpg';;
+      }
 
-      String url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.trim();
-      noticias_destacada.add(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate.toString(), url_picture_cubadebate.toString(),'',-1,1));
+      await DBProvider.db.addNoticiaPortada(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', -1, 1, 1)) ;
     }
     String url=web.getElementsByClassName('Section-container Section-isRow-isTop-isWrap')[1]
         .children[0]
@@ -133,6 +141,7 @@ class NoticiasProvider{
           .children[2]
           .attributes['data-src']
           .toString();
+       url_image=await downloadAndPath(url_image);
     }catch(e){
           url_image='assets/foto-no-disponible.jpg';
     }
@@ -140,10 +149,12 @@ class NoticiasProvider{
         .children[0]
         .text
         .trim();
-    noticias_destacada.add(Noticias(tittle, subtittle, url.toString(), url_image.toString(),'',-1,1));
-    return noticias_destacada;
+    noticias_destacada.add(Noticias(tittle, subtittle, url.toString(), url_image.toString(),'',-1,1,1));
+    await DBProvider.db.addNoticiaPortada(Noticias(tittle, subtittle, url, url_image, '', -1, 1, 1));
+    //return noticias_destacada;
   }
 
+  //DESCARGO LAS IMAGENES
   Future<String> downloadAndPath(String url) async{
     final directory=await getApplicationDocumentsDirectory();
     final String ext=url.contains('.jpeg')?'.jpeg':'.jpg';
