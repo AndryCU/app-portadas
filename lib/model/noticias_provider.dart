@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:news_app/utils/preferences.dart';
@@ -176,8 +178,96 @@ class NoticiasProvider{
       print(e.toString());
       return '';
     }
+ }
 
-    }
+   writteText(String url,String file_name)async{
+     final Directory directory = await getApplicationDocumentsDirectory();
+     final File file = File('${directory.path}/$file_name.json');
+     final response_cubadebate =await http.Client().get(Uri.parse(url));
+     var web_cubadebate=parser.parse(response_cubadebate.body);
+     final cuerpo= web_cubadebate.getElementsByClassName('note_content')[0];
+     final ini_json='{"fuente":"cubadebate",\n"parrafos":[\n';
+     file.writeAsStringSync(ini_json,mode: FileMode.append);
+     List<String> temp=[];
+     for(var i=0;i<cuerpo.children.length;i++){
+       String t='';
+       if(cuerpo.children[i].toString()=='<html ul>'){
+         t=forULElements(cuerpo.children[i].children); //abrirycerrarEtiquetas(cuerpo.children[i].toString(),cuerpo.children[i].text.trim());
+       }else{
+         t=abrirycerrarEtiquetas(cuerpo.children[i].toString(),cuerpo.children[i].text.trim());
+       }
+
+       if(cuerpo.children.length==i+1 && t.isNotEmpty){
+         t=t.substring(0,t.length-2);
+       }
+       if(cuerpo.children.length==i+1 && t.isEmpty){
+         temp[i-1]=temp[i-1].substring(0,temp[i-1].length-2);
+       }
+       if(t.isNotEmpty){
+         temp.add(t);
+       }
+     }
+
+     for (var texto in temp){
+       file.writeAsStringSync(texto,mode: FileMode.append);
+     }
+     final end_json=']\n}';
+     file.writeAsStringSync(end_json,mode: FileMode.append);
+   }
+
+   Future<String> read(String file_name) async {
+     late Future<String> text;
+     try {
+       final Directory directory = await getApplicationDocumentsDirectory();
+       final File file = File('${directory.path}/$file_name.json');
+       text = file.readAsString();
+       log(await text);
+     } catch (e) {
+       print(e.toString());
+     }
+     return text;
+   }
+
+   String abrirycerrarEtiquetas(String e,String texto) {
+     print(e);
+     switch (e){
+       case '<html p>':{
+         return texto.isEmpty?'':'{'
+             '"etiqueta":"p",'
+             '"texto":"$texto"'
+             '},\n';
+       }
+       case '<html blockquote>':{
+         return texto.isEmpty?'': '{'
+             '"etiqueta":"blockquote",'
+             '"texto":"$texto"'
+             '},\n';
+       }
+       case '<html h3>':{
+         return texto.isEmpty?'': '{'
+             '"etiqueta":"h3",'
+             '"texto":"$texto"'
+             '},\n';
+       }
+     }
+     return '';
+   }
+
+   String forULElements(List<Element> e){
+     String init_ul='"{etiqueta": "ul","texto":[';
+     for(int i=0;i<e.length;i++){
+       if(i+1==e.length){
+         init_ul+='{"etiqueta":"li","texto":"${e[i].text}"}';
+       }else{
+         init_ul+='{"etiqueta":"li","texto":"${e[i].text}"},';
+       }
+     }
+     init_ul+=']},\n';
+
+
+     return init_ul;
+   }
+
 }
 
 

@@ -52,7 +52,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ReadNewsView(news: snapshot.data![index]),
+                              builder: (context) =>ReadNewsView()//(news: snapshot.data![index]),
                             ),
                           );
                         },
@@ -92,7 +92,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Container() //ReadNewsView(news: recent),
+                              builder: (context) => ReadNewsView()//(news: snapshot2.data![index2]),
                           ),
                         );
                       },

@@ -25,7 +25,7 @@ var kCategoryTitle = TextStyle(
 var kDetailContent = TextStyle(
     fontSize: 14.0,
     color: kGrey2,
-    fontFamily: 'Roboto'
+    fontFamily: 'Roboto',
   );
 
 var kTitleCard =  TextStyle(

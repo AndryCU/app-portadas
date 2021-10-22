@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/model/news.dart';
-import 'package:news_app/views/read_news_view.dart';
-import 'package:news_app/widgets/primary_card.dart';
 
 class TrendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: trendingList.length,
+    return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
-      itemBuilder: (context, index) {
-        var trending = trendingList[index];
-
-        return InkWell(
+      children: [
+        InkWell(
+          child: ListTile(title: Text('Cubadebate'),trailing: IconButton(icon: Icon(Icons.keyboard_arrow_right), onPressed: () {
+           },),),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
+            Navigator.push(  context,   MaterialPageRoute(
                 builder: (context) => Container() //ReadNewsView(news: trending),
-              ),
-            );
+            ),  );
           },
-          child: Container(
-            width: double.infinity,
-            height: 300.0,
-            margin: EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
-            child: Container() //PrimaryCard(news: trending),
-          ),
-        );
-      },
+        ),
+        InkWell(
+          child: ListTile(title: Text('RT'),trailing: IconButton(icon: Icon(Icons.keyboard_arrow_right), onPressed: () {
+          },),),
+          onTap: () {
+            Navigator.push(  context,   MaterialPageRoute(
+                builder: (context) => Container() //ReadNewsView(news: trending),
+            ),  );
+          },
+        ),
+      ],
     );
   }
+
+  //onTap: () {
+  //Navigator.push(
+  //context,
+  //MaterialPageRoute(
+  //builder: (context) => Container() //ReadNewsView(news: trending),
+  //),
+  //);
+  //}
+
 }
