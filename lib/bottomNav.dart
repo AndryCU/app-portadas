@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:news_app/model/noticias_provider.dart';
 import 'package:news_app/views/account_view.dart';
 import 'package:news_app/views/favorite_view.dart';
 import 'package:news_app/views/home_view.dart';
-import 'package:news_app/views/search_view.dart';
 
 class BottomNav extends StatefulWidget {
   @override
@@ -29,6 +27,7 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
+    print('BottomNavigationBar build');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

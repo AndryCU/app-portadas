@@ -1,28 +1,13 @@
-import 'dart:async';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:news_app/model/ConnectionStatus.dart';
 import 'package:news_app/model/db.dart';
 import 'package:news_app/model/noticias_model.dart';
-import 'package:news_app/model/noticias_provider.dart';
-import 'package:news_app/utils/preferences.dart';
 import 'package:news_app/views/read_news_view.dart';
 import 'package:news_app/widgets/primary_card.dart';
 import 'package:news_app/widgets/secondary_card.dart';
-import 'package:provider/provider.dart';
-
 import '../constants.dart';
 
 
-class PopularTabView extends StatefulWidget {
-  @override
-  _PopularTabViewState createState() => _PopularTabViewState();
-}
-
-class _PopularTabViewState extends State<PopularTabView> {
-
-  final prefs = new PreferenciasUsuario();
+class PopularTabView extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +20,7 @@ class _PopularTabViewState extends State<PopularTabView> {
             height: MediaQuery.of(context).size.height*0.45,
             padding: EdgeInsets.only(left: 18.0),
             child: FutureBuilder(
-              future: DBProvider.db.getNoticiasPortada(context),
+              future: DBProvider.db.getPrincipalesNews(context),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
                 if(snapshot.hasData&&snapshot.data!.length==0){
                   return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,0));
@@ -52,7 +37,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>ReadNewsView()//(news: snapshot.data![index]),
+                              builder: (context) =>ReadNewsView(news: snapshot.data![index]),
                             ),
                           );
                         },
@@ -92,7 +77,7 @@ class _PopularTabViewState extends State<PopularTabView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ReadNewsView()//(news: snapshot2.data![index2]),
+                              builder: (context) => ReadNewsView(news: snapshot2.data![index2],),
                           ),
                         );
                       },
@@ -114,5 +99,4 @@ class _PopularTabViewState extends State<PopularTabView> {
       ),
     );
   }
-
 }

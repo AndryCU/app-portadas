@@ -81,21 +81,26 @@ class DBProvider {
     return res.isNotEmpty?Noticias.fromJson(res):[];
  }
 
- Future<List<Noticias>> getNoticiasPortada(BuildContext context)async{
-   if(Provider.of<ConnectionStatusView>(context).connected){
+ Future<List<Noticias>> getPrincipalesNews(BuildContext context)async{
+
+   final db=await database;
+   final res_if=await db!.query('Noticias',where: 'destacada=0');
+   print('${res_if.length} longitud de comprobacion: valor boolean: ${Provider.of<ConnectionStatusView>(context,listen: false).connected} ');
+   if(Provider.of<ConnectionStatusView>(context,listen: false).connected && res_if.isEmpty){
      await NoticiasProvider().principalesNews();
    }
-    final db=await database;
-    final res=await db!.query('Noticias',where: 'destacada=0');
-    return res.isNotEmpty?Noticias.fromJson(res):[];
+   final res=await db.query('Noticias',where: 'destacada=0');
+   return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
   Future<List<Noticias>> getNoticiasDestacadas(BuildContext context)async{
-    if(Provider.of<ConnectionStatusView>(context).connected){
+
+    final db=await database;
+    final res_if=await db!.query('Noticias',where: 'destacada=1');
+    if(Provider.of<ConnectionStatusView>(context,listen: false).connected && res_if.isEmpty){
       await NoticiasProvider().getDestacadas();
     }
-    final db=await database;
-    final res=await db!.query('Noticias',where: 'destacada=1');
+    final res=await db.query('Noticias',where: 'destacada=1');
     return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 

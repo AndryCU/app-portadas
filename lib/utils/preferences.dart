@@ -23,4 +23,18 @@ class PreferenciasUsuario {
     _prefs.setBool('start', value);
   }
 
+  bool get hasDataLoading {
+    return _prefs.getBool('hasDataLoading') ?? false;
+  }
+
+  set hasDataLoading(bool value) {
+    _prefs.setBool('hasDataLoading', value);
+  }
+  bool get hasDataLoading2 {
+    return _prefs.getBool('hasDataLoading2') ?? false;
+  }
+
+  set hasDataLoading2(bool value) {
+    _prefs.setBool('hasDataLoading2', value);
+  }
 }

@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:news_app/bottomNav.dart';
 import 'package:news_app/model/ConnectionStatus.dart';
+import 'package:news_app/model/db.dart';
 import 'package:news_app/utils/preferences.dart';
 import 'package:news_app/views/read_news_view.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: ReadNewsView(),
+        home: BottomNav()
       ),
     );
   }
@@ -42,6 +44,4 @@ class MyApp extends StatelessWidget {
     }
   }
 }
-
-
 
