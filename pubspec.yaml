@@ -42,10 +42,10 @@ dependencies:
   permission_handler:
   provider:
   connectivity_plus:
-  web_scraper:
-  webview_flutter_plus:
-  apklis_payment_checker:
+  #webview_flutter_plus:
+  #apklis_payment_checker:
   flutter_native_splash:
+  flutter_inappwebview:
 dev_dependencies:
   flutter_test:
     sdk: flutter

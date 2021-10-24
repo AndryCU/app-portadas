@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class TrendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+      print('en otra pantalla');
+      return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),

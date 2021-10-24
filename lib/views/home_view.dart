@@ -15,7 +15,6 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late StreamSubscription<ConnectivityResult> subscription;
-
   @override
   void initState() {
     super.initState();
@@ -46,26 +45,21 @@ class _HomeViewState extends State<HomeView> {
               Column(
                 children: [
                   Consumer<ConnectionStatusView>(
-                    builder: (context, value, child) {
+                    builder: (context, value, _) {
                       return ListTile(
-                        title: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: !value.connected?Colors.red:Color.fromRGBO(192, 192, 192, 0),
-                          ),
-                          child: Text(
-                            !value.connected?'OFFLINE':'',
-                            textAlign: TextAlign.center,
-                            style: kNonActiveTabStyle.copyWith(color: Colors.black),
-                          ),
-                        ),
-                        subtitle: Text(
-                          "Mantente al dia",
-                          textAlign: TextAlign.left,
-                          style: kActiveTabStyle,
-                        ),
-                      );
-                    },
+                              title: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: !value.connected?Colors.red:Color.fromRGBO(192, 192, 192, 0),
+                                ),
+                                child: Text(
+                                  !value.connected?'OFFLINE':'',
+                                  textAlign: TextAlign.center,
+                                  style: kNonActiveTabStyle.copyWith(color: Colors.black),
+                                ),
+                              ),
+                            );
+                          },
                   ),
                   Align(
                     alignment: Alignment.topLeft,
@@ -78,8 +72,8 @@ class _HomeViewState extends State<HomeView> {
                       indicatorColor: Colors.white,
                       labelStyle: kActiveTabStyle.copyWith(fontSize: 25.0),
                       tabs: [
-                        Tab(text: "Últimas noticias",),
-                        Tab(text: "Portadas"),
+                        Tab(text: "Popular",),
+                        Tab(text: "Tendencia"),
                         //Tab(text: "Recent"),
                       ],
                     ),
@@ -89,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
         ),
         body: TabBarView(
           children: [
-            PopularTabView(),
+            PopularTabView(),///<-----------------
             TrendingTabView(),
            // RecentTabView(),
           ],
