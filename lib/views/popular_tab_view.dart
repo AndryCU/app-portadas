@@ -11,6 +11,7 @@ class PopularTabView extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
+    print('PopularTabView builder');
     return Container(
       child: ListView(
         physics: ScrollPhysics(),

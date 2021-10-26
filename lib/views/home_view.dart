@@ -36,6 +36,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    print('HomeViewBuilder');
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -45,7 +46,8 @@ class _HomeViewState extends State<HomeView> {
               Column(
                 children: [
                   Consumer<ConnectionStatusView>(
-                    builder: (context, value, _) {
+                    builder: (_, value, __) {
+                      print('Builder Consumer');
                       return ListTile(
                               title: Container(
                                 decoration: BoxDecoration(

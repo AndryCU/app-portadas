@@ -81,7 +81,6 @@ class Noticias {
 
 
   static List<Noticias> fromJson(List<Map<String,dynamic>> map){
-   print('fromJson');
     List<Noticias> favoritas=[];
     for(var mapa_noticia in map){
       String title=mapa_noticia['title'];

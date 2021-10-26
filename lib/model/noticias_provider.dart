@@ -7,14 +7,12 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'ConnectionStatus.dart';
 import 'db.dart';
 import 'noticias_model.dart';
 
 class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
    principalesNews()async{
-     print('principalesNews()async{');
     await DBProvider.db.borrarPortadaPrincipales();
     String url_picture='';
     String tittle='';
@@ -77,7 +75,6 @@ class NoticiasProvider{
           url_picture=await downloadAndPath(url_picture);
         }
         flag=false;
-        print(tittle);
         //DBProvider.db.borrarParaAnnadir(a+1);
         await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
         // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
@@ -89,13 +86,12 @@ class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA VERTICAL
    getDestacadas()async{
     await DBProvider.db.borrarPortadaDestacadas();
-    List<Noticias> noticias_destacada = [];
-   
     //CUBADEBATE//
     final response_cubadebate =await http.Client().get(Uri.parse("http://www.cubadebate.cu/"));
     var web_cubadebate=parser.parse(response_cubadebate.body);
     final response =await http.Client().get(Uri.parse("https://actualidad.rt.com/viral"));
     var web=parser.parse(response.body);
+    print('scraping cubadebate');
     for(var i=0;i<4;i++){
       final noticia=web_cubadebate.getElementById('front-list')!.children[i];
       String url_cubadebate=noticia.getElementsByClassName('title')[0].children[0].attributes['href']!.trim();
@@ -112,10 +108,11 @@ class NoticiasProvider{
         url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.trim();
         url_picture_cubadebate=await downloadAndPath(url_picture_cubadebate);
       }catch(e){
-        url_picture_cubadebate='assets/foto-no-disponible.jpg';;
+        url_picture_cubadebate='assets/foto-no-disponible.jpg';
       }
       //noticias_destacada.add(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', 0, 1, 1));
-      await DBProvider.db.addNoticiaPortada(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', -1, 1, 1)) ;
+
+        await DBProvider.db.addNoticiaPortada(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', -1, 1, 1)) ;
     }
     String url=web.getElementsByClassName('Section-container Section-isRow-isTop-isWrap')[1]
         .children[0]
