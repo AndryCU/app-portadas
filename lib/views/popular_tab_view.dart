@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/model/ConnectionStatus.dart';
 import 'package:news_app/model/db.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/views/read_news_view.dart';
+import 'package:news_app/widgets/dialog_offline.dart';
 import 'package:news_app/widgets/primary_card.dart';
 import 'package:news_app/widgets/secondary_card.dart';
+import 'package:provider/provider.dart';
 import '../constants.dart';
 
 
@@ -11,7 +14,7 @@ class PopularTabView extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
-    print('PopularTabView builder');
+    //final value=;
     return Container(
       child: ListView(
         physics: ScrollPhysics(),
@@ -35,12 +38,19 @@ class PopularTabView extends StatelessWidget  {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
+                          if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                             Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>ReadNewsView(news: snapshot.data![index]),
                             ),
                           );
+                          }else{
+                            showDialog(context: context,
+                             builder: (contex){
+                               return dilogOffline(context);
+                             });
+                          }                           
                         },
                         child: Container(
                           margin: EdgeInsets.only(right: 12.0),
@@ -75,12 +85,20 @@ class PopularTabView extends StatelessWidget  {
                   itemBuilder: (context, index2) {
                     return InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ReadNewsView(news: snapshot2.data![index2],),
-                          ),
-                        );
+                       
+                          if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                             Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>ReadNewsView(news: snapshot2.data![index2]),
+                            ),
+                          );
+                          }else{
+                            showDialog(context: context,
+                             builder: (contex){
+                               return dilogOffline(context);
+                             });
+                          }  
                       },
                       child: Container(
                         width: double.infinity,

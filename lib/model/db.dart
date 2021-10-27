@@ -61,17 +61,17 @@ class DBProvider {
   borrarPortadaPrincipales()async{
     final db=await database;
     final preferencias=PreferenciasUsuario();
-    if(preferencias.start){
+    //if(preferencias.start){
       await db!.delete('Noticias',where: 'destacada=0');
-    }
+    //}
   }
 
   borrarPortadaDestacadas()async{
     final db=await database;
     final preferencias=PreferenciasUsuario();
-    if(preferencias.start){
+    //if(preferencias.start){
       await db!.delete('Noticias',where: 'destacada=1');
-    }
+    //}
   }
 
   //SELECT FAVORITAS

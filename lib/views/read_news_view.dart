@@ -1,10 +1,7 @@
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:news_app/model/noticias_model.dart';
-import 'package:path_provider/path_provider.dart';
 class ReadNewsView extends StatefulWidget {
   late final Noticias news;//=Noticias('Test', 'Decretan estado de alaasdasdsad asdasdasdasdrma en la region occidental ante las fuertes lluvias', 'http://www.cubadebate.cu/noticias/2021/10/20/reapertura-y-flexibilizacion-de-medidas-en-la-habana-que-debe-saber/', 'http://media.cubadebate.cu/wp-content/uploads/2021/10/instituto-periodismo-foto-cesar-gomez-lopez-580x386.jpg', '', 1, 1, 1);
   ReadNewsView({required this.news});
@@ -59,14 +56,21 @@ class _ReadNewsViewState extends State<ReadNewsView> {
           onWebViewCreated: (controller) {
             webViewController = controller;
             webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(widget.news.url)));
-            //test();
           },
+          initialOptions: test(),
         )
       ),
     );
   }
 
-
+ InAppWebViewGroupOptions test(){
+   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+      android: AndroidInAppWebViewOptions(
+        loadsImagesAutomatically: false,
+      )
+      );
+      return options;
+  }
 }
 
 
