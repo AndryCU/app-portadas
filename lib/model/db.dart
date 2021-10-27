@@ -51,6 +51,7 @@ class DBProvider {
   addNoticiaPortada(Noticias noticia) async{
     final db=await database;
     await db!.insert('Noticias', noticia.toJson());
+    await db.insert('Noticias', noticia.toJson());
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
