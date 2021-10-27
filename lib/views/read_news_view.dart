@@ -57,13 +57,13 @@ class _ReadNewsViewState extends State<ReadNewsView> {
             webViewController = controller;
             webViewController!.loadUrl(urlRequest: URLRequest(url: Uri.parse(widget.news.url)));
           },
-          initialOptions: test(),
+          initialOptions: options(),
         )
       ),
     );
   }
 
- InAppWebViewGroupOptions test(){
+ InAppWebViewGroupOptions options(){
    InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
       android: AndroidInAppWebViewOptions(
         loadsImagesAutomatically: false,
