@@ -24,24 +24,21 @@ class PrimaryCard extends StatelessWidget {
         children: [
           SizedBox(height: 5.0),
           Expanded(
-            child: Hero(
-              tag: news.url,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  image: DecorationImage(
-                    image: getPicture(news.url_image),
-                    fit: BoxFit.cover,
-                  ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                image: DecorationImage(
+                  image: getPicture(news.url_image),
+                  fit: BoxFit.cover,
                 ),
-              )
+              ),
             ),
           ),
           SizedBox(height: 5.0),
           Text(
             news.subtitle,
             overflow: TextOverflow.ellipsis,
-            maxLines: 3,
+            maxLines: 5,
             style: kTitleCard,
           ),
         ],
