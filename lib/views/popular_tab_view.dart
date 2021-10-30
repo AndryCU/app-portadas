@@ -11,9 +11,9 @@ import '../constants.dart';
 
 
 class PopularTabView extends StatelessWidget  {
-
   @override
   Widget build(BuildContext context) {
+    print('builder PopularTabView');
     return Container(
       child: ListView(
         physics: ScrollPhysics(),
@@ -48,9 +48,9 @@ class PopularTabView extends StatelessWidget  {
           FutureBuilder(
             future: DBProvider.db.getNoticiasDestacadas(context),
             builder: (context, AsyncSnapshot<List<Noticias>> snapshot2) {
-              if(snapshot2.hasData&&snapshot2.data!.length==0){
-                  return PrimaryCard(news: Noticias('','Cargando','','assets/78454-loader.gif','',-1,-1,0));
-                }
+              //if(snapshot2.hasData&&snapshot2.data!.length==0){
+              //    return SecondaryCard(news: Noticias('','Cargando','','assets/78454-loader.gif','',-1,-1,0));
+              //  }
               if(snapshot2.hasData){
                 return ListView.builder(
                   itemCount: snapshot2.data!.length,
@@ -84,9 +84,9 @@ class PopularTabView extends StatelessWidget  {
                     );
                   },
                 );
-              }//else{
+              }else{
               return SecondaryCard(news: Noticias('Cargando','','','assets/78454-loader.gif','',-1,-1,1),);
-              //}
+              }
             },
           )
         ],

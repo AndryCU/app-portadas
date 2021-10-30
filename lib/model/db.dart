@@ -60,7 +60,6 @@ class DBProvider {
 
   borrarPortadaPrincipales()async{
     final db=await database;
-    final preferencias=PreferenciasUsuario();
     //if(preferencias.start){
       await db!.delete('Noticias',where: 'destacada=0');
     //}
@@ -68,7 +67,6 @@ class DBProvider {
 
   borrarPortadaDestacadas()async{
     final db=await database;
-    final preferencias=PreferenciasUsuario();
     //if(preferencias.start){
       await db!.delete('Noticias',where: 'destacada=1');
     //}
@@ -83,10 +81,12 @@ class DBProvider {
 
  Future<List<Noticias>> getPrincipalesNews(BuildContext context)async{
    final db=await database;
-    if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
-     await NoticiasProvider().principalesNews();
-    }
+   if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+      print('ejecuta principalesNews con  este valor: ${Provider.of<ConnectionStatusView>(context,listen: false).connected}');
+       await NoticiasProvider().principalesNews();
+   }
    final res=await db!.query('Noticias',where: 'destacada=0');
+   print('longitud de principales ${res.length}');
    return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
@@ -94,7 +94,8 @@ class DBProvider {
     final db=await database;
     final res_if=await db!.query('Noticias',where: 'destacada=1');
     if(Provider.of<ConnectionStatusView>(context,listen: false).connected ){
-      await NoticiasProvider().getDestacadas();
+       print('ejecuta getNoticiasDestacadas con este valor: ${Provider.of<ConnectionStatusView>(context,listen: false).connected}');
+         await NoticiasProvider().getDestacadas();
     }
     final res=await db.query('Noticias',where: 'destacada=1');
     print('longitud de destacadas ${res.length}');

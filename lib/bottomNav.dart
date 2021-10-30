@@ -27,7 +27,6 @@ class _BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    print('BottomNavigationBar build');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

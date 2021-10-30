@@ -85,7 +85,7 @@ class _HomeViewState extends State<HomeView> {
         ),
         body: TabBarView(
           children: [
-            PopularTabView(),///<-----------------
+            PopularTabView(),
             TrendingTabView(),
            // RecentTabView(),
           ],

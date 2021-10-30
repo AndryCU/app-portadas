@@ -103,7 +103,6 @@ class NoticiasProvider{
     var web_cubadebate=parser.parse(response_cubadebate.body);
     final response =await http.Client().get(Uri.parse("https://actualidad.rt.com/viral"));
     var web=parser.parse(response.body);
-    print('scraping cubadebate');
     for(var i=0;i<4;i++){
       final noticia=web_cubadebate.getElementById('front-list')!.children[i];
       String url_cubadebate=noticia.getElementsByClassName('title')[0].children[0].attributes['href']!.trim();
@@ -161,10 +160,18 @@ class NoticiasProvider{
   //DESCARGO LAS IMAGENES
   Future<String> downloadAndPath(String url) async{
     final directory=await getApplicationDocumentsDirectory();
-    final String ext=url.contains('.jpeg')?'.jpeg':'.jpg';
-    final String nombre='';
+    String ext='';
+    if(url.contains('.jpeg')){
+      ext='.jpeg';
+    }
+    if(url.contains('.jpg')){
+      ext='.jpg';
+    }
+    if(url.contains('.png')){
+      ext='.png';
+    }
     try{
-      final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}.jpg';
+      final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}$ext';
       final foto=File(path);
       final response=await Dio().get(url,
           options: Options(
