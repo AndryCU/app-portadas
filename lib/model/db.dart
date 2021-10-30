@@ -81,12 +81,10 @@ class DBProvider {
 
  Future<List<Noticias>> getPrincipalesNews(BuildContext context)async{
    final db=await database;
-   if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
-      print('ejecuta principalesNews con  este valor: ${Provider.of<ConnectionStatusView>(context,listen: false).connected}');
-       await NoticiasProvider().principalesNews();
-   }
+    if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+     await NoticiasProvider().principalesNews();
+    }
    final res=await db!.query('Noticias',where: 'destacada=0');
-   print('longitud de principales ${res.length}');
    return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
