@@ -18,10 +18,8 @@ class NoticiasProvider{
     String tittle='';
     String url='';
     bool flag=false;
-    final response_todas_las_noticias =await http.Client().get(Uri.parse("https://actualidad.rt.com/todas_las_noticias"));
     final response_viral =await http.Client().get(Uri.parse("https://actualidad.rt.com/viral"));
     var viral=parser.parse(response_viral.body);
-    var todas_las_noticias=parser.parse(response_todas_las_noticias.body);
     if (response_viral.statusCode==200){
       //VIRAL//
       String subtittle=viral.getElementsByClassName('Link-root Link-isFullCard')[0].text.trim();
@@ -48,9 +46,25 @@ class NoticiasProvider{
       String url2=viral.getElementsByClassName('Link-root Link-isFullCard')[0].attributes['href'].toString();
       await DBProvider.db.addNoticiaPortada(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image, '', -1, 1,0));
       //noticias_principal_portada.add(Noticias('VIRAL', subtittle, 'https://actualidad.rt.com$url2', url_image.toString(),'',-1,-1,0));
-      //VIRAL
-      for (int a=0;a<4;a++){
-        //NOTICIAS//////////
+      final lista= await getNewsRT(4);
+      for (var noticia in  lista) {
+        await DBProvider.db.addNoticiaPortada(noticia);
+      }
+     
+    }
+  }
+
+ Future<List<Noticias>> getNewsRT(int cant_noticias)async{
+     final response_todas_las_noticias =await http.Client().get(Uri.parse("https://actualidad.rt.com/todas_las_noticias"));
+     var todas_las_noticias=parser.parse(response_todas_las_noticias.body);
+     String url_picture='';
+     String tittle='';
+     String url='';
+     bool flag=false;
+     List<Noticias> noticias_principal_portada=[];     
+
+      for (int a=0;a<cant_noticias;a++){
+        //NOTICIAS
         try{
           String as=todas_las_noticias.getElementsByClassName('Card-root Card-isHoverScale')[a]
               .children[1].attributes['class']!.toString();
@@ -75,12 +89,10 @@ class NoticiasProvider{
           url_picture=await downloadAndPath(url_picture);
         }
         flag=false;
-        //DBProvider.db.borrarParaAnnadir(a+1);
-        await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
-        // noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
-
+        //await DBProvider.db.addNoticiaPortada(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
+        noticias_principal_portada.add(Noticias('',tittle , 'https://actualidad.rt.com/$url', url_picture.toString(),'',-1,1,0));
       }
-    }
+      return noticias_principal_portada;
   }
 
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA VERTICAL

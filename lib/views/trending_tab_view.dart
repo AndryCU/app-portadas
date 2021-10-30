@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/views/portadas.dart';
 
 class TrendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-      print('en otra pantalla');
       return ListView(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
@@ -23,7 +23,7 @@ class TrendingTabView extends StatelessWidget {
           },),),
           onTap: () {
             Navigator.push(  context,   MaterialPageRoute(
-                builder: (context) => Container() //ReadNewsView(news: trending),
+                builder: (context) => PortadasWidget() //ReadNewsView(news: trending),
             ),  );
           },
         ),

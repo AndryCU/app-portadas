@@ -14,7 +14,6 @@ class PopularTabView extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
-    //final value=;
     return Container(
       child: ListView(
         physics: ScrollPhysics(),
@@ -26,41 +25,15 @@ class PopularTabView extends StatelessWidget  {
             child: FutureBuilder(
               future: DBProvider.db.getPrincipalesNews(context),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
-                if(snapshot.hasData&&snapshot.data!.length==0){
-                  return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,0));
-                }
+                //if(snapshot.hasData&&snapshot.data!.length==0){
+                //  return PrimaryCard(news: Noticias('Cargando','','','assets/78454-loader.gif','',-1,-1,0));
+                //}
                 if (snapshot.hasData){
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: snapshot.data!.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
-                             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>ReadNewsView(news: snapshot.data![index]),
-                            ),
-                          );
-                          }else{
-                            showDialog(context: context,
-                             builder: (contex){
-                               return dilogOffline(context);
-                             });
-                          }                           
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(right: 12.0),
-                          child:  PrimaryCard(news: snapshot.data![index]),
-                        ),
-                      );
-                    },
-                  );
+                  return showListNewsWidget(snapshot);
+                }else{
+                  return PrimaryCard(news: Noticias('','Cargando','','assets/78454-loader.gif','',-1,-1,0));
                 }
-                return PrimaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,0));
+                
               },
             ),
           ),
@@ -69,13 +42,15 @@ class PopularTabView extends StatelessWidget  {
             alignment: Alignment.topLeft,
             child: Padding(
               padding: EdgeInsets.only(left: 19.0),
-              child: Text("Destacadas",
-                  style: kNonActiveTabStyle),
+              child: Text("Destacadas", style: kNonActiveTabStyle),
             ),
           ),
           FutureBuilder(
             future: DBProvider.db.getNoticiasDestacadas(context),
             builder: (context, AsyncSnapshot<List<Noticias>> snapshot2) {
+              if(snapshot2.hasData&&snapshot2.data!.length==0){
+                  return PrimaryCard(news: Noticias('','Cargando','','assets/78454-loader.gif','',-1,-1,0));
+                }
               if(snapshot2.hasData){
                 return ListView.builder(
                   itemCount: snapshot2.data!.length,
@@ -109,13 +84,45 @@ class PopularTabView extends StatelessWidget  {
                     );
                   },
                 );
-              }else{
-                return SecondaryCard(news: Noticias('Cargando','','','assets/cargando-loading-043.gif','',-1,-1,1),);
-              }
+              }//else{
+              return SecondaryCard(news: Noticias('Cargando','','','assets/78454-loader.gif','',-1,-1,1),);
+              //}
             },
           )
         ],
       ),
     );
+  }
+
+  ListView showListNewsWidget(AsyncSnapshot<List<Noticias>> snapshot) {
+    return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                           Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>ReadNewsView(news: snapshot.data![index]),
+                          ),
+                        );
+                        }else{
+                          showDialog(context: context,
+                           builder: (contex){
+                             return dilogOffline(context);
+                           });
+                        }                           
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(right: 12.0),
+                        child:  PrimaryCard(news: snapshot.data![index]),
+                      ),
+                    );
+                  },
+                );
   }
 }
