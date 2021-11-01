@@ -22,9 +22,9 @@ class _HomeViewState extends State<HomeView> {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if(result!=ConnectivityResult.none){
-        Provider.of<ConnectionStatusView>(context,listen: false).connected=true;
+        Provider.of<StateOfMyApp>(context,listen: false).connected=true;
       }else{
-        Provider.of<ConnectionStatusView>(context,listen: false).connected=false;
+        Provider.of<StateOfMyApp>(context,listen: false).connected=false;
       }
     });
   }
@@ -45,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
           child:
               Column(
                 children: [
-                  Consumer<ConnectionStatusView>(
+                  Consumer<StateOfMyApp>(
                     builder: (_, value, __) {
                       print('Builder Consumer');
                       return ListTile(

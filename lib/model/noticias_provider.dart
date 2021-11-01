@@ -13,7 +13,8 @@ import 'noticias_model.dart';
 class NoticiasProvider{
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA HORIZONTAL
    principalesNews()async{
-    await DBProvider.db.borrarPortadaPrincipales();
+     print('busco en principalesNews ');
+    await DBProvider.db.borrarPortadaPrincipalesoDestacadas(0);
     String url_picture='';
     String tittle='';
     String url='';
@@ -97,7 +98,7 @@ class NoticiasProvider{
 
   //OBTENGO LAS NOTICIAS QUE VAN EN LA LISTA VERTICAL
    getDestacadas()async{
-    await DBProvider.db.borrarPortadaDestacadas();
+    await DBProvider.db.borrarPortadaPrincipalesoDestacadas(1);
     //CUBADEBATE//
     final response_cubadebate =await http.Client().get(Uri.parse("http://www.cubadebate.cu/"));
     var web_cubadebate=parser.parse(response_cubadebate.body);
@@ -116,14 +117,16 @@ class NoticiasProvider{
       }
       String url_picture_cubadebate='';
       try{
-        url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.trim();
+        url_picture_cubadebate=noticia.getElementsByClassName('spoiler')[0].children[0].children[0].attributes['src']!.toString();
         url_picture_cubadebate=await downloadAndPath(url_picture_cubadebate);
+        if (url_picture_cubadebate.isEmpty) {
+          url_picture_cubadebate='assets/foto-no-disponible.jpg';
+        }
       }catch(e){
         url_picture_cubadebate='assets/foto-no-disponible.jpg';
       }
-      //noticias_destacada.add(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', 0, 1, 1));
-
-        await DBProvider.db.addNoticiaPortada(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', -1, 1, 1)) ;
+      print(url_picture_cubadebate);
+      await DBProvider.db.addNoticiaPortada(Noticias(tittle_cubadebate, subtittle_cubadebate, url_cubadebate, url_picture_cubadebate, '', -1, 1, 1)) ;
     }
     String url=web.getElementsByClassName('Section-container Section-isRow-isTop-isWrap')[1]
         .children[0]
@@ -161,17 +164,20 @@ class NoticiasProvider{
   Future<String> downloadAndPath(String url) async{
     final directory=await getApplicationDocumentsDirectory();
     String ext='';
+    int aux=4;
     if(url.contains('.jpeg')){
+      aux=5;
       ext='.jpeg';
     }
-    if(url.contains('.jpg')){
+    if(url.contains('.jpg')||url.contains('.JPG')){
       ext='.jpg';
     }
     if(url.contains('.png')){
       ext='.png';
     }
+    
     try{
-      final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-4).toString()}$ext';
+      final path='${directory.path}/imagenes_descargadas/${url.substring(url.length-14,url.length-aux).toString()}$ext';
       final foto=File(path);
       final response=await Dio().get(url,
           options: Options(

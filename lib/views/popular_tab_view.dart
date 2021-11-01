@@ -13,7 +13,9 @@ import '../constants.dart';
 class PopularTabView extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
-    print('builder PopularTabView');
+    var connect=StateOfMyApp();
+    print(connect.getinitCargo.toString());
+    connect.setinitCargo=1;
     return Container(
       child: ListView(
         physics: ScrollPhysics(),
@@ -23,7 +25,7 @@ class PopularTabView extends StatelessWidget  {
             height: MediaQuery.of(context).size.height*0.45,
             padding: EdgeInsets.only(left: 18.0),
             child: FutureBuilder(
-              future: DBProvider.db.getPrincipalesNews(context),
+              future: connect.getNoticias(context),
               builder: (context,AsyncSnapshot<List<Noticias>> snapshot) {
                 //if(snapshot.hasData&&snapshot.data!.length==0){
                 //  return PrimaryCard(news: Noticias('Cargando','','','assets/78454-loader.gif','',-1,-1,0));
@@ -46,12 +48,9 @@ class PopularTabView extends StatelessWidget  {
             ),
           ),
           FutureBuilder(
-            future: DBProvider.db.getNoticiasDestacadas(context),
+            future: connect.getDestacadas(context),
             builder: (context, AsyncSnapshot<List<Noticias>> snapshot2) {
-              //if(snapshot2.hasData&&snapshot2.data!.length==0){
-              //    return SecondaryCard(news: Noticias('','Cargando','','assets/78454-loader.gif','',-1,-1,0));
-              //  }
-              if(snapshot2.hasData){
+               if(snapshot2.hasData){
                 return ListView.builder(
                   itemCount: snapshot2.data!.length,
                   scrollDirection: Axis.vertical,
@@ -59,9 +58,8 @@ class PopularTabView extends StatelessWidget  {
                   shrinkWrap: true,
                   itemBuilder: (context, index2) {
                     return InkWell(
-                      onTap: () {
-                       
-                          if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                      onTap: () {                       
+                          if(Provider.of<StateOfMyApp>(context,listen: false).connected){
                              Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -103,7 +101,7 @@ class PopularTabView extends StatelessWidget  {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                        if(Provider.of<StateOfMyApp>(context,listen: false).connected){
                            Navigator.push(
                           context,
                           MaterialPageRoute(

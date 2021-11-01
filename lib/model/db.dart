@@ -58,17 +58,10 @@ class DBProvider {
     await db!.update('Noticias', noticia.toJson(),where: 'id = ?',whereArgs: [noticia.url]);
   }
 
-  borrarPortadaPrincipales()async{
+  borrarPortadaPrincipalesoDestacadas(int valor)async{
     final db=await database;
     //if(preferencias.start){
-      await db!.delete('Noticias',where: 'destacada=0');
-    //}
-  }
-
-  borrarPortadaDestacadas()async{
-    final db=await database;
-    //if(preferencias.start){
-      await db!.delete('Noticias',where: 'destacada=1');
+      await db!.delete('Noticias',where: 'destacada=?',whereArgs: [valor]);
     //}
   }
 
@@ -79,24 +72,23 @@ class DBProvider {
     return res.isNotEmpty?Noticias.fromJson(res):[];
  }
 
- Future<List<Noticias>> getPrincipalesNews(BuildContext context)async{
+ Future<List<Noticias>> getPrincipalesNews(BuildContext context,bool buscoDB)async{
+   
    final db=await database;
-    if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
-     await NoticiasProvider().principalesNews();
+    if(Provider.of<StateOfMyApp>(context,listen: false).connected&&buscoDB){
+      print('busco en web');
+      await NoticiasProvider().principalesNews();
     }
    final res=await db!.query('Noticias',where: 'destacada=0');
    return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
-  Future<List<Noticias>> getNoticiasDestacadas(BuildContext context)async{
+  Future<List<Noticias>> getNoticiasDestacadas(BuildContext context,bool busco)async{
     final db=await database;
-    final res_if=await db!.query('Noticias',where: 'destacada=1');
-    if(Provider.of<ConnectionStatusView>(context,listen: false).connected ){
-       print('ejecuta getNoticiasDestacadas con este valor: ${Provider.of<ConnectionStatusView>(context,listen: false).connected}');
+    if(Provider.of<StateOfMyApp>(context,listen: false).connected &&busco){
          await NoticiasProvider().getDestacadas();
     }
-    final res=await db.query('Noticias',where: 'destacada=1');
-    print('longitud de destacadas ${res.length}');
+    final res=await db!.query('Noticias',where: 'destacada=1');
     return res.isNotEmpty?Noticias.fromJson(res):[];
   }
 
@@ -105,14 +97,6 @@ class DBProvider {
     final db =await database;
     final res=await db!.delete('Noticias',where: 'favorite = 1');
     return res;
-  }
-  borrarParaAnnadir(int pos,Database? dbProvider)async{
-    final res=await dbProvider!.query('Noticias');
-    if(res.length==5){
-      String url=res[pos]['url']as String;
-     int r= await dbProvider.delete('Noticias',where: 'url = ?',whereArgs: [url]);
-     print(r);
-    }
   }
 
 }

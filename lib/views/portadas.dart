@@ -45,7 +45,7 @@ class PortadasWidget extends StatelessWidget {
                 itemBuilder: (context, index2) {
                   return InkWell(
                     onTap: () {                     
-                        if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                        if(Provider.of<StateOfMyApp>(context,listen: false).connected){
                            Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -86,7 +86,7 @@ class PortadasWidget extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        if(Provider.of<ConnectionStatusView>(context,listen: false).connected){
+                        if(Provider.of<StateOfMyApp>(context,listen: false).connected){
                            Navigator.push(
                           context,
                           MaterialPageRoute(

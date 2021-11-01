@@ -20,7 +20,6 @@ class _BottomNavState extends State<BottomNav> {
 
   static List<Widget> _bottomNavView = [
     HomeView(),
-   // SearchView(),
     FavoriteView(),
     AccountView(),
   ];
@@ -41,14 +40,8 @@ class _BottomNavState extends State<BottomNav> {
         onTap: _onItemTapped,
         items: _navBarList.map(
               (e) => BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  e.icon,
-                  width: 24.0,
-                ),
-                activeIcon: SvgPicture.asset(
-                  e.activeIcon,
-                  width: 24.0,
-                ),
+                icon:  e.icon,                
+                activeIcon: e.activeIcon,
                 label: e.title,
               ),
             ).toList(),
@@ -58,31 +51,26 @@ class _BottomNavState extends State<BottomNav> {
 }
 
 class NavBarItem {
-  final String icon;
-  final String activeIcon;
+  final Icon icon;
+  final Icon activeIcon;
   final String title;
   NavBarItem({required this.icon, required this.activeIcon, required this.title});
 }
 
 List<NavBarItem> _navBarList = [
   NavBarItem(
-    icon: "assets/home.svg",
-    activeIcon: "assets/home_2.svg",
+    icon: Icon(Icons.home,color: Colors.black,size: 24,),
+    activeIcon: Icon(Icons.home,color: Colors.blue,size: 24),
     title: "Home",
   ),
-  //NavBarItem(
-  //  icon: "assets/search.svg",
-  //  activeIcon: "assets/search_2.svg",
-  //  title: "Search",
-  //),
   NavBarItem(
-    icon: "assets/favorite.svg",
-    activeIcon: "assets/favorite_2.svg",
+    icon: Icon(Icons.favorite,color: Colors.black,size: 24),
+    activeIcon: Icon(Icons.favorite,color: Colors.red,size: 24),
     title: "Favorite",
   ),
   NavBarItem(
-    icon: "assets/account.svg",
-    activeIcon: "assets/account_2.svg",
+    icon: Icon(Icons.settings,color: Colors.black,size: 24),
+    activeIcon: Icon(Icons.settings,color: Colors.deepPurple,size: 24),
     title: "Account",
   ),
 ];

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     crearDirectorio();
     return ChangeNotifierProvider(
-      create: (context)=>ConnectionStatusView(),
+      create: (context)=>StateOfMyApp(),
       child: MaterialApp(
         title: 'Flutter News',
         debugShowCheckedModeBanner: false,
