@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/model/ConnectionStatus.dart';
+import 'package:news_app/model/StateOfMyApp.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
 import 'package:news_app/views/read_news_view.dart';

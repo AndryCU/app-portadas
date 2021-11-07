@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:news_app/bottomNav.dart';
-import 'package:news_app/model/ConnectionStatus.dart';
+import 'package:news_app/model/StateOfMyApp.dart';
 import 'package:news_app/utils/preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';

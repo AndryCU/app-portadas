@@ -2,7 +2,6 @@
 import 'dart:io';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/model/noticias_provider.dart';
-import 'package:news_app/utils/preferences.dart';
 export 'package:news_app/model/noticias_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 
-import 'ConnectionStatus.dart';
+import 'StateOfMyApp.dart';
 
 class DBProvider {
   static Database? _database;
@@ -30,6 +29,7 @@ class DBProvider {
     return await openDatabase(
         path,
         version:1,
+        onOpen: (db){},
         onCreate: (Database db,int version) async{
           await db.execute(
             'CREATE TABLE Noticias('
@@ -54,8 +54,10 @@ class DBProvider {
   }
 
   addNoticiaFavoritoActualizandoValor(Noticias noticia) async{
+
+    noticia.favorite=noticia.favorite==-1?1:-1;
     final db=await database;
-    await db!.update('Noticias', noticia.toJson(),where: 'id = ?',whereArgs: [noticia.url]);
+    await db!.update('Noticias', noticia.toJson(),where: 'url = ?',whereArgs: [noticia.url]);
   }
 
   borrarPortadaPrincipalesoDestacadas(int valor)async{
@@ -68,7 +70,8 @@ class DBProvider {
   //SELECT FAVORITAS
  Future<List<Noticias>> getNoticiasFavoritas()async{
     final db=await database;
-    final res=await db!.query('Noticias');
+    final res=await db!.query('Noticias',where: 'favorite = 1');
+    print(res.length);
     return res.isNotEmpty?Noticias.fromJson(res):[];
  }
 
@@ -76,7 +79,6 @@ class DBProvider {
    
    final db=await database;
     if(Provider.of<StateOfMyApp>(context,listen: false).connected&&buscoDB){
-      print('busco en web');
       await NoticiasProvider().principalesNews();
     }
    final res=await db!.query('Noticias',where: 'destacada=0');

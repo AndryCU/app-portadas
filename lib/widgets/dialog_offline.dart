@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 Widget dilogOffline(BuildContext context){
-  return AlertDialog(
-    title: Center(child: Icon(Icons.error_outline,color: Colors.red,size: MediaQuery.of(context).size.height*0.05,)),//Center(child: Container(child: Lottie.asset('assets/error.json'),height: MediaQuery.of(context).size.height*0.05,)),
-    content: Container(
-      child: Column(
-        children: [
-          Text('Conexión a internet no detectada. Active los datos móviles o conéctese a un red Wi-Fi.',textAlign: TextAlign.left,)
-        ],
-        mainAxisSize: MainAxisSize.min,
+  return Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    child: Stack(children: [
+      Container(
+        height: 170,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 48, 10, 10),
+          child: Column(
+            children: [
+              Text('Error al cargar noticia',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+              Text('Active los datos móviles o conéctese a una red Wi-Fi.',style: TextStyle(fontSize: 15),),
+              TextButton(onPressed: ()=>Navigator.of(context).pop(), child: Text('OK'))
+            ],
+          ),
+        ),
       ),
+      Positioned(child: CircleAvatar(
+        child: Icon(Icons.error,color: Colors.white,size: 60,),
+        backgroundColor: Colors.red,
+        radius: 30,
+        ),
+        top: -30,
+        )
+
+    ],
+    alignment: Alignment.topCenter,
+    clipBehavior: Clip.none,
     ),
   );
 }

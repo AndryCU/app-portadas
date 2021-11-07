@@ -9,7 +9,6 @@ class StateOfMyApp with ChangeNotifier{
   bool get connected => _connected;
 
   Future<List<Noticias>> getNoticias(BuildContext context)async{
-    print('getNoticias');
    if(_initCargo==0){
      return DBProvider.db.getPrincipalesNews(context,true);
    }else{
@@ -18,7 +17,6 @@ class StateOfMyApp with ChangeNotifier{
   }
 
    Future<List<Noticias>> getDestacadas(BuildContext context)async{
-    print('getNoticias');
    if(_initCargo==0){
      return DBProvider.db.getNoticiasDestacadas(context,true);
    }else{
@@ -35,7 +33,6 @@ factory StateOfMyApp(){
 
   set connected(bool value) {
     _connected = value;
-    print('cambia valor de la conexion $value');
     notifyListeners();
   }
 

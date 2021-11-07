@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:news_app/model/db.dart';
 import 'package:news_app/model/noticias_model.dart';
 import 'package:news_app/utils/preferences.dart';
 class ReadNewsView extends StatefulWidget {
@@ -39,9 +40,12 @@ class _ReadNewsViewState extends State<ReadNewsView> {
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: Icon(Icons.favorite,color: Colors.red,),
+                    icon: Icon(widget.news.favorite==1?Icons.favorite:Icons.favorite_border,color: widget.news.favorite==1? Colors.red:Colors.black,),
                     onPressed: () {
-
+                      setState(() {
+                        
+                      });
+                      DBProvider.db.addNoticiaFavoritoActualizandoValor(widget.news);
                     },
                   ),
                 ],
