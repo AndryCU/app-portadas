@@ -1,16 +1,3 @@
-# news_app
+# News on on front pages app
 
-Aplicacion de  noticias
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The objective of this app was to create an app that would show the news on covers in different media. This app will no longer be developed and it has bugs that will be solved soon to serve as an example of how to apply the scrapping technique and the option of images through this technique, as well as the use of the provider state manager.
